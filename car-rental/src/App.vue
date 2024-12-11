@@ -2,34 +2,32 @@
   <div id="app">
     <NavBar />
     <Hero />
-    <router-view/>
+    <CarRentalSelector />
   </div>
 </template>
 
 <script>
 import NavBar from './components/NavBar.vue';
 import Hero from './components/Hero.vue';
+import CarRentalSelector from './components/CarRentalSelector.vue';
 
 export default {
-  name: "App",
+  name: 'App',
   components: {
     NavBar,
-    Hero
+    Hero,
+    CarRentalSelector
   }
 };
 </script>
 
 <style>
-html, body, #app {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-#app > * {
-  flex: 1;
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px; /* 填入适合的顶边距，防止Nav覆盖Hero */
 }
 </style>

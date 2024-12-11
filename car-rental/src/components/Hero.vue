@@ -19,6 +19,7 @@ export default {
 <style scoped>
 .hero {
   background: url('@/assets/images/main_bg.png') no-repeat center center/cover; /* 使用背景图 */
+  width: 100%;
   height: 100vh; /* 设定完整视口高度 */
   display: flex; /* 使用 Flexbox 进行布局 */
   justify-content: center; /* 内容居中 */
