@@ -10,6 +10,7 @@
 ```bash
 git clone https://github.com/ImpEtums/HZNU_car_rental.git
 cd HZNU_car_rental
+cd car-rental
 ```
 
 ### 安装依赖
