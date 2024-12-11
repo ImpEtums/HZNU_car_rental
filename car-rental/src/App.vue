@@ -3,6 +3,8 @@
     <NavBar />
     <Hero />
     <CarRentalSelector />
+    <!-- <CarShowcase /> -->
+    <StoreLocator />
   </div>
 </template>
 
@@ -10,13 +12,17 @@
 import NavBar from './components/NavBar.vue';
 import Hero from './components/Hero.vue';
 import CarRentalSelector from './components/CarRentalSelector.vue';
+//import CarShowcase from './components/CarShowcase.vue';
+import StoreLocator from './components/StoreLocator.vue';
 
 export default {
   name: 'App',
   components: {
     NavBar,
     Hero,
-    CarRentalSelector
+    CarRentalSelector,
+    // CarShowcase,
+    StoreLocator
   }
 };
 </script>
