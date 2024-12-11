@@ -1,177 +1,209 @@
 <template>
     <section class="car-rental-selector">
       <div class="selector">
-        <div class="location-selection" @click="toggleCityDropdown">
+        <div class="location-selection">
           <div class="city-select">
-            <span>{{ selectedCity }}</span>
-            <span class="arrow">{{ isCityDropdownVisible ? '▲' : '▼' }}</span>
+            <n-select
+              v-model:value="selectedCity"
+              :options="cityOptions"
+              placeholder="选择取车城市"
+              @update:value="handleCityChange"
+            />
           </div>
-          <div class="district-select">
-            <span>{{ selectedDistrict }}</span>
+          <div class="station-select">
+            <n-select
+              v-model:value="selectedStation"
+              :options="stationOptions"
+              placeholder="选择取车网点"
+              :disabled="!selectedCity"
+            />
           </div>
         </div>
   
-        <div class="date-selection" @click="toggleDatePicker">
-          <span>选择取车日期</span>
+        <div class="date-selection">
+          <div class="date-picker">
+            <n-date-picker
+              v-model:value="pickupDate"
+              type="date"
+              placeholder="选择取车日期"
+              clearable
+            />
+          </div>
+          <div class="time-picker">
+            <n-time-picker
+              v-model:value="pickupTime"
+              format="HH:mm"
+              :minute-step="30"
+              :minutes="allowedMinutes"
+              placeholder="选择取车时间"
+              clearable
+            />
+          </div>
         </div>
+  
+        <button class="rent-button" @click="confirmRental">确认租车</button>
       </div>
-  
-      <div v-if="isCityDropdownVisible" class="dropdown-menu">
-        <div class="hot-cities">
-          <h4>热门城市</h4>
-          <div v-for="city in hotCities" :key="city.code" @click="selectCity(city.name)">
-            {{ city.name }}
-          </div>
-        </div>
-  
-        <div class="alphabetic-group">
-          <div v-for="(group, index) in groupedCities" :key="index">
-            <h4>{{ group.letter }}</h4>
-            <div>
-              <div v-for="city in group.cities" :key="city.code" @click="selectCity(city.name)">
-                {{ city.name }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-  
-      <div v-if="isDatePickerVisible" class="date-picker">
-        <input type="datetime-local" v-model="pickupDate" />
-      </div>
-  
-      <button class="rent-button" @click="confirmRental">确认租车</button>
     </section>
   </template>
   
   <script>
+  import { NDatePicker, NSelect, NTimePicker } from 'naive-ui'
+
   export default {
     name: "CarRentalSelector",
-    data() {
-      return {
-        selectedCity: "杭州",
-        selectedDistrict: "杭州师范大学",
-        isCityDropdownVisible: false,
-        isDatePickerVisible: false,
-        hotCities: [
-          { name: "北京", code: "BJ" },
-          { name: "上海", code: "SH" },
-          { name: "广州", code: "GZ" },
-          { name: "深圳", code: "SZ" },
-          { name: "杭州", code: "HZ" },
-        ],
-        cities: [
-          { name: "阿坝", code: "AB" },
-          { name: "安康", code: "AK" },
-          { name: "安庆", code: "AQ" },
-          { name: "巴中", code: "BZ" },
-          { name: "杭州", code: "HZ" },
-          { name: "武汉", code: "WH" },
-          { name: "成都", code: "CD" },
-        ],
-        isDatePickerVisible: false,
-        groupedCities: []
-      };
+    components: {
+      NDatePicker,
+      NSelect,
+      NTimePicker
     },
-    created() {
-      this.groupCities();
+    data() {
+      // 获取当前时间并调整到最近的半点或整点
+      const now = new Date()
+      const minutes = now.getMinutes()
+      const roundedMinutes = minutes >= 30 ? 30 : 0
+      now.setMinutes(roundedMinutes)
+      now.setSeconds(0)
+      now.setMilliseconds(0)
+
+      return {
+        selectedCity: 'HZ',
+        selectedStation: 'HZNU',
+        pickupDate: now.getTime(),
+        pickupTime: now.getTime(),
+        // 城市数据，后续可从数据库获取
+        cityOptions: [
+          { label: '杭州', value: 'HZ' },
+          { label: '北京', value: 'BJ' },
+          { label: '上海', value: 'SH' },
+          { label: '广州', value: 'GZ' }
+        ],
+        // 网点数据映射，后续可从数据库获取
+        stationsMap: {
+          'HZ': [
+            { label: '杭州师范大学', value: 'HZNU' },
+            { label: '武林门', value: 'WLM' }
+          ],
+          'BJ': [
+            { label: '北京站', value: 'BJZ' },
+            { label: '首都机场', value: 'PEK' }
+          ]
+        },
+        allowedMinutes: [0, 30] // 只允许选择 0 分和 30 分
+      }
+    },
+    computed: {
+      stationOptions() {
+        return this.selectedCity ? this.stationsMap[this.selectedCity] || [] : []
+      }
     },
     methods: {
-      toggleCityDropdown() {
-        this.isCityDropdownVisible = !this.isCityDropdownVisible;
+      handleCityChange(cityValue) {
+        this.selectedStation = null // 清空已选网点
+        // 这里可以添加从数据库获取对应城市网点的逻辑
+        console.log('选择的城市：', cityValue)
       },
-      toggleDatePicker() {
-        this.isDatePickerVisible = !this.isDatePickerVisible;
-      },
-      selectCity(city) {
-        this.selectedCity = city;
-        this.isCityDropdownVisible = false; // 选择 city 后收起下拉框
-      },
-      confirmRental(event) {
-        event.preventDefault(); // 阻止默认行为
-        alert(`你选择的租车城市是: ${this.selectedCity}，取车时间是: ${this.pickupDate}`);
-      },
-      groupCities() {
-        const letters = [...Array(26)].map((_, i) => String.fromCharCode(i + 65)); // A-Z
-        this.groupedCities = letters.map(letter => ({
-          letter,
-          cities: this.cities.filter(city => city.name.startsWith(letter))
-        })).filter(group => group.cities.length); // 只保留有城市的组
+      confirmRental() {
+        const cityName = this.cityOptions.find(city => city.value === this.selectedCity)?.label
+        const stationName = this.stationOptions.find(station => station.value === this.selectedStation)?.label
+        const dateTime = new Date(this.pickupDate)
+        const time = new Date(this.pickupTime)
+        dateTime.setHours(time.getHours(), time.getMinutes())
+        alert(`你选择的租车城市是: ${cityName}，网点是: ${stationName}，取车时间是: ${dateTime.toLocaleString()}`)
       }
     }
-  };
+  }
   </script>
   
   <style scoped>
     .car-rental-selector {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    justify-content: center;
     margin: 20px 0;
     }
 
     .selector {
     display: flex;
-    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
     width: 100%;
-    max-width: 800px; /* 最大宽度 */
+    max-width: 1000px;
     }
 
     .location-selection {
+    flex: 3;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
     display: flex;
-    flex: 1;
-    border: 1px solid #ccc; /* 加边框 */
-    border-radius: 5px; /* 圆角 */
-    cursor: pointer;
-    padding: 10px; /* 内边距 */
-    position: relative;
+    gap: 10px;
     }
 
     .city-select,
-    .district-select {
+    .station-select {
     flex: 1;
-    text-align: center;
     }
 
-    .arrow {
-    margin-left: 5px;
+    /* 覆盖 naive-ui select 的默认样式 */
+    :deep(.n-select) {
+      width: 100%;
+    }
+
+    :deep(.n-input) {
+      background: transparent;
     }
 
     .date-selection {
+    flex: 2;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+    }
+
+    .date-picker,
+    .time-picker {
     flex: 1;
-    cursor: pointer;
     }
 
-    .dropdown-menu {
-    background-color: white; /* 下拉菜单背景颜色 */
-    border: 1px solid #ccc; /* 菜单边框颜色 */
-    position: absolute;
-    z-index: 10;
-    width: 100%;
-    max-height: 300px; /* 最大高度 */
-    overflow-y: auto; /* 垂直滚动条 */
-    }
-
-    .hot-cities, .alphabetic-group {
-    padding: 10px; /* 内边距 */
+    /* 覆盖 naive-ui 日期和时间选择器的默认样式 */
+    :deep(.n-date-picker),
+    :deep(.n-time-picker) {
+      width: 100%;
     }
 
     .rent-button {
-    background-color: #ffbb00; /* 按钮背景颜色 */
-    color: white; /* 按钮文字颜色 */
-    padding: 10px 20px; /* 按钮内边距 */
-    border: none; /* 去掉按钮边框 */
-    border-radius: 5px; /* 圆角按钮 */
-    cursor: pointer; /* 鼠标指针变为手形 */
-    transition: background-color 0.3s; /* 背景颜色过渡效果 */
+    height: 42px;
+    padding: 0 20px;
+    background-color: #ffbb00;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    white-space: nowrap;
     }
 
     .rent-button:hover {
-    background-color: #bb5500; /* 鼠标悬停颜色 */
+    background-color: #bb5500;
     }
 
-    .date-picker {
-    margin-top: 10px; /* 与选择区间保持间距 */
+    /* 覆盖 naive-ui 日期选择器的默认样式 */
+    :deep(.n-date-picker) {
+      width: 100%;
+    }
+
+    :deep(.n-input) {
+      background: transparent;
+    }
+
+    :deep(.n-input__input-el) {
+      cursor: pointer;
+    }
+
+    /* 覆盖 naive-ui 级联选择器的默认样式 */
+    :deep(.n-cascader) {
+      width: 100%;
     }
   </style>
   

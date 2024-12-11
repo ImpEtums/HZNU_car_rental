@@ -18,47 +18,55 @@ export default {
 
 <style scoped>
 .hero {
-  background: url('@/assets/images/main_bg.png') no-repeat center center/cover; /* 使用背景图 */
+  background: url('@/assets/images/bg_3.png') no-repeat center top;
+  background-size: cover;
   width: 100%;
-  height: 100vh; /* 设定完整视口高度 */
-  display: flex; /* 使用 Flexbox 进行布局 */
-  justify-content: center; /* 内容居中 */
-  align-items: center; /* 内容居中 */
-  color: white; /* 文字颜色 */
-  text-align: center; /* 文本居中 */
+  height: 600px;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  text-align: center;
 }
 
 .content {
-  max-width: 600px; /* 最大宽度 */
-  padding: 20px; /* 内边距 */
+  max-width: 600px;
+  padding: 20px;
 }
 
 .hero-logo {
-  width: 150px; /* Logo 显示宽度 */
-  margin-bottom: 20px; /* Logo 和标题之间的间距 */
+  width: 150px;
+  margin-bottom: 20px;
 }
 
 .hero-title {
-  font-size: 2.5rem; /* 标题字体大小 */
-  margin-bottom: 10px; /* 标题和描述之间的间距 */
+  font-size: 3rem;
+  margin-bottom: 10px;
+  -webkit-text-stroke: 1px black;
+  text-stroke: 1px black;
 }
 
 .hero-description {
-  font-size: 1.2rem; /* 描述字体大小 */
-  margin-bottom: 20px; /* 描述和按钮之间的间距 */
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+
 }
 
 .cta-button {
   display: inline-block;
-  background-color: #ffbb00; /* 按钮背景颜色 */
-  color: black; /* 按钮文字颜色 */
-  padding: 10px 20px; /* 按钮内边距 */
-  text-decoration: none; /* 去掉下划线 */
-  border-radius: 5px; /* 圆角按钮 */
-  transition: background-color 0.3s; /* 背景颜色过渡效果 */
+  background-color: #ffbb00;
+  color: black;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
 }
 
 .cta-button:hover {
-  background-color: #bb5500; /* 鼠标悬停颜色 */
+  background-color: #bb5500;
 }
 </style>
