@@ -5,39 +5,35 @@
         <p>您还没有订单</p>
       </div>
       <div v-else>
-        <div v-for="order in orders" :key="order.orderId" class="order-card">
-          <h2 class="order-title">订单ID: {{ order.orderId }}</h2>
-          <div class="order-details">
-            <div class="detail-item">
-              <strong>用户ID:</strong> {{ order.userId }}
-            </div>
-            <div class="detail-item">
-              <strong>车辆信息:</strong> {{ order.carModel }}
-            </div>
-            <div class="detail-item">
-              <strong>租赁时间:</strong> {{ order.rentalStart }} - {{ order.rentalEnd }}
-            </div>
-            <div class="detail-item">
-              <strong>订单状态:</strong> <span :class="statusClass(order.orderStatus)">{{ order.orderStatus }}</span>
-            </div>
-            <div class="detail-item">
-              <strong>支付状态:</strong> <span :class="statusClass(order.paymentStatus)">{{ order.paymentStatus }}</span>
-            </div>
-            <div class="detail-item">
-              <strong>支付ID:</strong> {{ order.paymentId }}
-            </div>
-            <div class="detail-item">
-              <strong>保险ID:</strong> {{ order.insuranceId }}
-            </div>
-            <div class="detail-item">
-              <strong>总价:</strong> ￥{{ order.totalPrice.toFixed(2) }}
-            </div>
-          </div>
-          <div class="order-actions">
-            <button @click="viewOrder(order.orderId)">查看订单</button>
-            <button v-if="order.orderStatus === '待取车'" @click="cancelOrder(order.orderId)">取消订单</button>
-          </div>
-        </div>
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>订单ID</th>
+              <th>用户ID</th>
+              <th>车辆信息</th>
+              <th>租赁时间</th>
+              <th>订单状态</th>
+              <th>支付状态</th>
+              <th>总价</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="order in orders" :key="order.orderId">
+              <td>{{ order.orderId }}</td>
+              <td>{{ order.userId }}</td>
+              <td>{{ order.carModel }}</td>
+              <td>{{ order.rentalStart }} - {{ order.rentalEnd }}</td>
+              <td><span :class="statusClass(order.orderStatus)">{{ order.orderStatus }}</span></td>
+              <td><span :class="statusClass(order.paymentStatus)">{{ order.paymentStatus }}</span></td>
+              <td>￥{{ order.totalPrice.toFixed(2) }}</td>
+              <td>
+                <button @click="viewOrder(order.orderId)">查看订单</button>
+                <button v-if="order.orderStatus === '待取车'" @click="cancelOrder(order.orderId)" class="cancel-button">取消订单</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </template>
@@ -118,51 +114,31 @@
     max-width: 800px; /* 设置最大宽度 */
     margin: 0 auto; /* 居中对齐 */
   }
-  .order-card {
+  
+  .orders-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .orders-table th,
+  .orders-table td {
     border: 1px solid #ccc;
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 12px; /* 增加圆角 */
-    background-color: #ffffff; /* 背景色 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 阴影效果 */
-    transition: transform 0.2s; /* 动画效果 */
+    padding: 10px;
+    text-align: left;
+    white-space: nowrap; /* 防止文本换行 */
   }
-  .order-card:hover {
-    transform: translateY(-2px); /* 鼠标悬停效果 */
+  
+  .orders-table th {
+    background-color: #f4c256;
+    color: white;
   }
-  .order-title {
-    margin: 0 0 10px 0;
-    font-size: 1.5em; /* 增加标题大小 */
-    color: #333; /* 标题颜色 */
-  }
-  .order-details {
-    display: flex;
-    flex-direction: column;
-  }
-  .detail-item {
-    margin: 5px 0;
-    font-size: 0.95em; /* 字体大小 */
-  }
-  .order-actions {
-    margin-top: 15px;
-  }
-  .status-pending {
-    color: orange;
-  }
-  .status-active {
-    color: green;
-  }
-  .status-completed {
-    color: rgb(242, 201, 105);
-  }
-  .status-paid {
-    color: teal;
-  }
+  
   .no-orders {
     text-align: center;
     font-size: 18px;
     color: #888;
   }
+  
   button {
     margin-right: 10px;
     padding: 6px 12px;
@@ -173,7 +149,28 @@
     cursor: pointer;
     transition: background-color 0.3s;
   }
+  
   button:hover {
     background-color: #f4b43e;
+  }
+  
+  .cancel-button {
+    margin-left: 10px; /* 增加左侧间距 */
+  }
+  
+  .status-pending {
+    color: orange;
+  }
+  
+  .status-active {
+    color: green;
+  }
+  
+  .status-completed {
+    color: rgb(242, 201, 105);
+  }
+  
+  .status-paid {
+    color: teal;
   }
   </style>

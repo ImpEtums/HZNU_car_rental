@@ -9,13 +9,32 @@
         <a href="tel:666666666" class="phone-button">666-666-666</a> <!-- 电话按钮 -->
       </li>
     </ul>
-    <router-link to="/login" class="login-button">登录/注册</router-link>
+    <router-link
+      v-if="!isLoggedIn"
+      to="/login"
+      class="login-button"
+    >
+      登录/注册
+    </router-link>
+    <router-link
+      v-else
+      to="/profile"
+      class="profile-button"
+    >
+      个人信息
+    </router-link>
   </nav>
 </template>
 
 <script>
 export default {
-  name: "Navbar"
+  name: "NavBar",
+  computed: {
+    isLoggedIn() {
+      // 检查 localStorage 中是否有用户信息
+      return !!localStorage.getItem('user');
+    }
+  }
 };
 </script>
 
@@ -63,7 +82,8 @@ export default {
   color: #ffbb00; /* 悬停时变为黄色 */
 }
 
-.login-button {
+.login-button,
+.profile-button {
   text-decoration: none;
   color: white; /* 按钮文字为白色 */
   background-color: #ffbb00; /* 按钮背景颜色 */
@@ -73,21 +93,8 @@ export default {
   transition: background-color 0.3s; /* 背景色过渡 */
 }
 
-.login-button:hover {
-  background-color: #bb5500; /* 悬停时按钮背景颜色变化 */
-}
-
-.phone-button {
-  text-decoration: none;
-  color: white; /* 按钮文字为白色 */
-  background-color: #ffbb00; /* 按钮背景颜色 */
-  padding: 8px 12px; /* 按钮内边距 */
-  border-radius: 5px; /* 按钮圆角 */
-  font-weight: bold; /* 按钮文字加粗 */
-  transition: background-color 0.3s; /* 背景色过渡 */
-}
-
-.phone-button:hover {
+.login-button:hover,
+.profile-button:hover {
   background-color: #bb5500; /* 悬停时按钮背景颜色变化 */
 }
 </style>
